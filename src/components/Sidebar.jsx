@@ -1,4 +1,4 @@
-// import { ModeToggle } from "@/shadcn/components/mode-toggle";
+import { ModeToggle } from "@/shadcn/components/mode-toggle";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +23,7 @@ export default function Sidebar() {
           {option.name}
         </div>
       ))}
-      {/* <ModeToggle /> */}
+      <ModeToggle />
     </div>
   );
 }
