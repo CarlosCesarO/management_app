@@ -1,9 +1,10 @@
+// import { ModeToggle } from "@/shadcn/components/mode-toggle";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
 const options = [
   { route: "/", name: "Página Inicial" },
-  { route: "/projects", name: "Meu perfil" },
+  { route: "/projects", name: "Meus projetos" },
 ];
 
 export default function Sidebar() {
@@ -22,6 +23,7 @@ export default function Sidebar() {
           {option.name}
         </div>
       ))}
+      {/* <ModeToggle /> */}
     </div>
   );
 }
