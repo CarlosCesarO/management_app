@@ -9,21 +9,30 @@ import Signup from "./pages/Signup/Signup";
 import { ThemeProvider } from "./providers/ThemeProvider";
 
 function App() {
+  const user = undefined;
+
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <div className="App flex ">
         <BrowserRouter>
-          <Sidebar />
-          <div className="flex-grow">
+          {user ? (
+            <>
+              <Sidebar />
+              <div className="flex-grow">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="*" element={<Home />} />
+                  <Route path="/projects" element={<Projects />} />
+                </Routes>
+              </div>
+              <Membersbar />
+            </>
+          ) : (
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="*" element={<Home />} />
-              <Route path="/projects" element={<Projects />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
             </Routes>
-          </div>
-          <Membersbar />
+          )}
         </BrowserRouter>
       </div>
     </ThemeProvider>
