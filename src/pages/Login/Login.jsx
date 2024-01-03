@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/shadcn/components/ui/button";
 import { Input } from "@/shadcn/components/ui/input";
 import Logo from "../../assets/logo.svg";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   return (
@@ -46,9 +47,9 @@ export default function Login() {
           </form>
           <div className="flex justify-center gap-2 text-lg mt-12">
             <p>Não tem uma conta?</p>
-            {/* <Link to="/signup" className="text-primary">
+            <Link to="/signup" className="text-primary">
               Cadastre-se agora.
-            </Link> */}
+            </Link>
           </div>
         </div>
       </div>
