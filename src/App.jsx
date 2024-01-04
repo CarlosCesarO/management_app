@@ -7,9 +7,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import { ThemeProvider } from "./providers/ThemeProvider";
+import { useAuthContext } from "./hooks/useAuthContext";
 
 function App() {
-  const user = undefined;
+  const { user, authIsReady } = useAuthContext;
+
+  const usuario = { email: "user@example.com", password: "1234" };
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
