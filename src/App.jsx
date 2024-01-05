@@ -12,8 +12,6 @@ import { useAuthContext } from "./hooks/useAuthContext";
 function App() {
   const { user, authIsReady } = useAuthContext;
 
-  const usuario = { email: "user@example.com", password: "1234" };
-
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <div className="App flex ">
@@ -34,6 +32,7 @@ function App() {
             <Routes>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/*" element={<Signup />} />
             </Routes>
           )}
         </BrowserRouter>

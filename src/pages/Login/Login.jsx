@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/shadcn/components/ui/button";
 import { Input } from "@/shadcn/components/ui/input";
 import Logo from "../../assets/logo.svg";
 import { Link } from "react-router-dom";
+import { useLogin } from "@/hooks/useLogin";
 
 export default function Login() {
+  const { login, isPending, error } = useLogin();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    login(email, password);
+  };
   return (
     <div className="flex gap-20 h-screen w-full py-20 px-40">
       <div className="w-1/2 bg-muted rounded-lg p-12">
@@ -36,11 +45,21 @@ export default function Login() {
           <p className="mt-4 text-muted-foreground font-normal text-lg">
             Informe seus dados de acesso
           </p>
-          <form className="mt-10">
+          <form className="mt-10" onSubmit={handleLogin}>
             <p className="mt-5 text-muted-foreground mb-2.5">E-mail</p>
-            <Input type="email" />
+            <Input
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
             <p className="mt-5 text-muted-foreground mb-2.5">Senha</p>
-            <Input type="password" />
+            <Input
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
             <Button size="xl" className="mt-10 text-lg w-full">
               Entrar na minha conta
             </Button>
