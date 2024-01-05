@@ -25,4 +25,10 @@ export default defineConfig({
       "@shadcn": path.resolve(__dirname, "src/shadcn"),
     },
   },
+  optimizeDeps: {
+    include: [
+      "firebase/auth", // Inclua aqui os módulos específicos do Firebase que você está utilizando
+      // Outros módulos do Firebase que você está utilizando...
+    ],
+  },
 });
