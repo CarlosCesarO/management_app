@@ -8,9 +8,12 @@ import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { useAuthContext } from "./hooks/useAuthContext";
+import Loading from "./components/Loading";
 
 function App() {
-  const { user, authIsReady } = useAuthContext;
+  const { user, authIsReady } = useAuthContext();
+
+  if (!authIsReady) return <Loading />;
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
