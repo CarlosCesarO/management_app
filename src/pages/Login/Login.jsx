@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Button } from "@/shadcn/components/ui/button";
 import { Input } from "@/shadcn/components/ui/input";
-import Logo from "../../assets/logo.svg";
 import { Link } from "react-router-dom";
 import { useLogin } from "@/hooks/useLogin";
 import { ReloadIcon } from "@radix-ui/react-icons";
+import Logo from "@/components/logo";
 
 export default function Login() {
   const { login, isPending, error } = useLogin();
@@ -18,12 +18,8 @@ export default function Login() {
   return (
     <div className="flex gap-20 h-screen w-full py-20 px-40">
       <div className="w-1/2 bg-muted rounded-lg p-12">
-        <div className="flex items-center gap-3">
-          <img className="h-8" src={Logo} alt="logo" />
-          <h2 className="text-2xl tracking-widest font-medium mb-0.5">
-            get<span className="text-primary">it</span>done.
-          </h2>
-        </div>
+        +
+        <Logo />
         <h2 className="mt-24 text-3xl leading-[50px] font-semibold">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit.
         </h2>
