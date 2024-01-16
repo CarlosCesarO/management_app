@@ -72,7 +72,7 @@ export default function Sidebar() {
   const { user } = useAuthContext();
 
   return (
-    <div className="h-screen w-[250px] bg-secondary">
+    <nav className="h-screen w-[250px] bg-accent border border-border">
       <div className="p-5">
         <Logo size="sm" />
       </div>
@@ -140,7 +140,7 @@ export default function Sidebar() {
           className="opacity-50"
         >
           <InfoCircledIcon className="w-4 h-4 mr-2" />
-          Sair da Conta
+          Central de Ajuda
         </Button>
 
         <Button
@@ -153,6 +153,6 @@ export default function Sidebar() {
           Sair da Conta
         </Button>
       </div>
-    </div>
+    </nav>
   );
 }
