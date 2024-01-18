@@ -1,31 +1,51 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useCollection } from "@/hooks/useCollection";
+import { Skeleton } from "@/shadcn/components/ui/skeleton";
+
+function MemberSkeleton() {
+  return (
+    <div className="flex items-center gap-2.5 py-2">
+      <Skeleton className="h-4 w-4 rounded-full" />
+      <Skeleton className="h-4 w-[120px]" />
+    </div>
+  );
+}
 
 export default function Membersbar() {
   const { documents: users } = useCollection("users");
+  const usersLength = Number(localStorage.getItem("usersLength"));
+
+  const openChat = (userId) => {
+    //TODO: essa função ira abrir o chat com usuario com o id userID
+  };
+
+  useEffect(() => {
+    if (users) {
+      localStorage.setItem("usersLength", users.length);
+    }
+  }, [users]);
+
   return (
     <div className="h-screen w-[200px] border border-border p-5">
       <h2 className="font-medium text-lg mb-5">Membros </h2>
-      <div className="flex gap-2 items-center text-sm py-2.5" role="button">
-        <p className="font-medium">Carlos Cesar</p>
-      </div>
+      {users
+        ? users.map((user) => (
+            <div
+              key={user.id}
+              className="flex gap-2 items-center text-sm py-2.5"
+              role="button"
+            >
+              <div
+                className={`${
+                  user.online ? "bg-green-500" : "bg-red-500"
+                } h-3 w-3  rounded-full`}
+              />
+              <p className="font-medium">{user.name}</p>
+            </div>
+          ))
+        : [...Array(usersLength)].map((_, index) => (
+            <MemberSkeleton key={index} />
+          ))}
     </div>
-    // <div className="h-screen w-[200px] border border-border p-5">
-    //   <h2 className="font-medium text-lg mb-5">Membros </h2>
-    //   {users.map((user) => (
-    //     <div
-    //       key={user.id}
-    //       className="flex gap-2 items-center text-sm py-2.5"
-    //       role="button"
-    //     >
-    //       <div
-    //         className={`${
-    //           user.online ? "bg-green-500" : "bg-red-500"
-    //         }h-3 w-3  rounded-full`}
-    //       />
-    //       <p className="font-medium">{user.name}</p>
-    //     </div>
-    //   ))}
-    // </div>
   );
 }

@@ -60,10 +60,22 @@ const projectOptions = [
 ];
 
 const labelOptions = [
-  { route: "/", name: "Alta prioridade", icon: <LabelSvg color="#e04057" /> },
-  { route: "/", name: "Média prioridade", icon: <LabelSvg color="#e58d3a" /> },
-  { route: "/", name: "Baixa prioridade", icon: <LabelSvg color="#f8d376" /> },
-  { route: "/", name: "Em Standby", icon: <LabelSvg color="#5fb756" /> },
+  {
+    route: "/high",
+    name: "Alta prioridade",
+    icon: <LabelSvg color="#e04057" />,
+  },
+  {
+    route: "/mid",
+    name: "Média prioridade",
+    icon: <LabelSvg color="#e58d3a" />,
+  },
+  {
+    route: "/low",
+    name: "Baixa prioridade",
+    icon: <LabelSvg color="#f8d376" />,
+  },
+  { route: "/standy", name: "Em Standby", icon: <LabelSvg color="#5fb756" /> },
 ];
 
 export default function Sidebar() {

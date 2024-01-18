@@ -10,6 +10,7 @@ import { ThemeProvider } from "./providers/ThemeProvider";
 import { useAuthContext } from "./hooks/useAuthContext";
 import Loading from "./components/Loading";
 import Profile from "./pages/Profile/Profile";
+import Chat from "./components/Chat";
 
 function App() {
   const { user, authIsReady } = useAuthContext();
@@ -32,6 +33,7 @@ function App() {
                 </Routes>
               </div>
               <Membersbar />
+              <Chat />
             </>
           ) : (
             <Routes>
