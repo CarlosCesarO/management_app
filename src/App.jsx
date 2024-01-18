@@ -11,9 +11,12 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import Loading from "./components/Loading";
 import Profile from "./pages/Profile/Profile";
 import Chat from "./components/Chat";
+import ChatButton from "./components/ChatButton";
+import { useState } from "react";
 
 function App() {
   const { user, authIsReady } = useAuthContext();
+  const [chatIsOpen, setChatIsOpen] = useState(false);
 
   if (!authIsReady) return <Loading />;
 
@@ -33,7 +36,8 @@ function App() {
                 </Routes>
               </div>
               <Membersbar />
-              <Chat />
+              {chatIsOpen && <Chat />}
+              <ChatButton setChatIsOpen={setChatIsOpen} />
             </>
           ) : (
             <Routes>
