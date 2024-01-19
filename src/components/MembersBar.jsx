@@ -11,12 +11,12 @@ function MemberSkeleton() {
   );
 }
 
-export default function Membersbar() {
+export default function Membersbar({ setSelectedChat }) {
   const { documents: users } = useCollection("users");
   const usersLength = Number(localStorage.getItem("usersLength"));
 
-  const openChat = (userId) => {
-    //TODO: essa função ira abrir o chat com usuario com o id userID
+  const openChat = (userId, userName) => {
+    setSelectedChat({ id: userId, recipient: userName });
   };
 
   useEffect(() => {
@@ -34,6 +34,7 @@ export default function Membersbar() {
               key={user.id}
               className="flex gap-2 items-center text-sm py-2.5"
               role="button"
+              onClick={() => openChat(user.id, user.name)}
             >
               <div
                 className={`${

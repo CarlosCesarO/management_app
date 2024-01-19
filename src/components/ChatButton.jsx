@@ -1,6 +1,5 @@
 import { Button } from "@/shadcn/components/ui/button";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
-import React from "react";
 
 export default function ChatButton({ setChatIsOpen }) {
   return (

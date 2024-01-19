@@ -17,6 +17,7 @@ import { useState } from "react";
 function App() {
   const { user, authIsReady } = useAuthContext();
   const [chatIsOpen, setChatIsOpen] = useState(false);
+  const [selectedChat, setSelectedChat] = useState(null);
 
   if (!authIsReady) return <Loading />;
 
@@ -35,8 +36,8 @@ function App() {
                   <Route path="*" element={<Home />} />
                 </Routes>
               </div>
-              <Membersbar />
-              {chatIsOpen && <Chat />}
+              <Membersbar setSelectedChat={setSelectedChat} />
+              {chatIsOpen && <Chat selectedChat={selectedChat} />}
               <ChatButton setChatIsOpen={setChatIsOpen} />
             </>
           ) : (
