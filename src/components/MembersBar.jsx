@@ -11,11 +11,12 @@ function MemberSkeleton() {
   );
 }
 
-export default function Membersbar({ setSelectedChat }) {
+export default function Membersbar({ setSelectedChat, setChatIsOpen }) {
   const { documents: users } = useCollection("users");
   const usersLength = Number(localStorage.getItem("usersLength"));
 
   const openChat = (userId, userName) => {
+    setChatIsOpen(true);
     setSelectedChat({ id: userId, recipient: userName });
   };
 

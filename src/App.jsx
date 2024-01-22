@@ -36,9 +36,15 @@ function App() {
                   <Route path="*" element={<Home />} />
                 </Routes>
               </div>
-              <Membersbar setSelectedChat={setSelectedChat} />
+              <Membersbar
+                setSelectedChat={setSelectedChat}
+                setChatIsOpen={setChatIsOpen}
+              />
               {chatIsOpen && <Chat selectedChat={selectedChat} />}
-              <ChatButton setChatIsOpen={setChatIsOpen} />
+              <ChatButton
+                setChatIsOpen={setChatIsOpen}
+                setSelectedChat={setSelectedChat}
+              />
             </>
           ) : (
             <Routes>
