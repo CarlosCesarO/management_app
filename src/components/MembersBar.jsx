@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useCollection } from "@/hooks/useCollection";
 import { Skeleton } from "@/shadcn/components/ui/skeleton";
+import { useAuthContext } from "@/hooks/useAuthContext";
 
 function MemberSkeleton() {
   return (
@@ -11,13 +12,19 @@ function MemberSkeleton() {
   );
 }
 
-export default function Membersbar({ setSelectedChat, setChatIsOpen }) {
+export default function Membersbar({ setSelectedChat, setChatIsOpen, chats }) {
   const { documents: users } = useCollection("users");
   const usersLength = Number(localStorage.getItem("usersLength"));
+  const { user } = useAuthContext();
 
   const openChat = (userId, userName) => {
+    const chat = chats.find(
+      (chat) =>
+        chat.participants.includes(userId) &&
+        chat.participants.includes(user.uid)
+    );
     setChatIsOpen(true);
-    setSelectedChat({ id: userId, recipient: userName });
+    setSelectedChat({ id: chat.id, recipient: userName });
   };
 
   useEffect(() => {

@@ -9,9 +9,21 @@ import { ScrollArea } from "@/shadcn/components/ui/scroll-area";
 import { Separator } from "@/shadcn/components/ui/separator";
 import React from "react";
 import { useAuthContext } from "@/hooks/useAuthContext";
+import { useSubcollection } from "@/hooks/useSubcollection";
 
-export default function Chat({ selectedChat }) {
+export default function Chat({ selectedChat, chats }) {
   const { user } = useAuthContext();
+
+  const chat = chats.find((chat) => {
+    return chat.id === selectedChat?.id;
+  });
+
+  const { documents: messages } = useSubcollection(
+    "chats",
+    chat?.id,
+    "messages"
+  );
+
   const getInitials = (str) => {
     if (!str) {
       str = user.displayName;
@@ -21,8 +33,14 @@ export default function Chat({ selectedChat }) {
       .map((word) => word.charAt(0).toUpperCase())
       .join("");
   };
-  const messages = null;
-  const chats = null;
+
+  const getMessagePosition = (author) => {
+    if (author === user.uid) {
+      return "text-right";
+    } else {
+      return "text-left";
+    }
+  };
 
   return (
     <div className="fixed bottom-32 right-[248px] h-[500px] bg-input w-96 rounded-lg p-5 drop-shadow-2xl border border-foreground/10">
@@ -44,14 +62,21 @@ export default function Chat({ selectedChat }) {
         <ScrollArea className="flex-grow">
           {selectedChat
             ? messages?.map((message) => (
-                <div key={message.id}>{message.content}</div>
+                <div
+                  key={message.id}
+                  className={`${getMessagePosition(message.author)}`}
+                >
+                  {message.content}
+                </div>
               )) || (
                 <p className="text-foreground/50 text-sm">
                   Não há mensagens para exibir.
                 </p>
               )
             : chats?.map((chat) => <div key={chat.id}>TODO</div>) || (
-                <p>Não há conversas para exibir.</p>
+                <p className="text-foreground/50 text-sm">
+                  Não há conversas para exibir.
+                </p>
               )}
         </ScrollArea>
         <div className="flex gap-2.5">
