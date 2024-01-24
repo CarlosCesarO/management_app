@@ -10,6 +10,8 @@ import { Separator } from "@/shadcn/components/ui/separator";
 import React from "react";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import { useSubcollection } from "@/hooks/useSubcollection";
+import Message from "./Message";
+import getInitials from "@/utils/getInitials";
 
 export default function Chat({ selectedChat, chats }) {
   const { user } = useAuthContext();
@@ -21,26 +23,10 @@ export default function Chat({ selectedChat, chats }) {
   const { documents: messages } = useSubcollection(
     "chats",
     chat?.id,
-    "messages"
+    "messages",
+    null,
+    ["createdAt", "asc"]
   );
-
-  const getInitials = (str) => {
-    if (!str) {
-      str = user.displayName;
-    }
-    return str
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase())
-      .join("");
-  };
-
-  const getMessagePosition = (author) => {
-    if (author === user.uid) {
-      return "text-right";
-    } else {
-      return "text-left";
-    }
-  };
 
   return (
     <div className="fixed bottom-32 right-[248px] h-[500px] bg-input w-96 rounded-lg p-5 drop-shadow-2xl border border-foreground/10">
@@ -61,14 +47,7 @@ export default function Chat({ selectedChat, chats }) {
         <Separator className="bg-foreground/10 my-4" />
         <ScrollArea className="flex-grow">
           {selectedChat
-            ? messages?.map((message) => (
-                <div
-                  key={message.id}
-                  className={`${getMessagePosition(message.author)}`}
-                >
-                  {message.content}
-                </div>
-              )) || (
+            ? messages?.map((message) => <Message message={message} />) || (
                 <p className="text-foreground/50 text-sm">
                   Não há mensagens para exibir.
                 </p>

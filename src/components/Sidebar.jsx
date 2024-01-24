@@ -21,6 +21,7 @@ import {
 } from "@shadcn/components/ui/avatar";
 import { useAuthContext } from "@/hooks/useAuthContext";
 import LabelSvg from "./Label";
+import getInitials from "@/utils/getInitials";
 
 const userOptions = [
   {
@@ -91,7 +92,9 @@ export default function Sidebar() {
       <div className="flex  gap-3 p-5">
         <Avatar>
           <AvatarImage src="" />
-          <AvatarFallback className="bg-primary/50">CC</AvatarFallback>
+          <AvatarFallback className="bg-primary/50">
+            {getInitials(user.displayName)}
+          </AvatarFallback>
         </Avatar>
         <div>
           <p className="font-medium">{user.displayName}</p>
