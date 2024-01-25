@@ -12,8 +12,12 @@ function MemberSkeleton() {
   );
 }
 
-export default function Membersbar({ setSelectedChat, setChatIsOpen, chats }) {
-  const { documents: users } = useCollection("users");
+export default function Membersbar({
+  setSelectedChat,
+  setChatIsOpen,
+  chats,
+  users,
+}) {
   const usersLength = Number(localStorage.getItem("usersLength"));
   const { user } = useAuthContext();
 
@@ -37,21 +41,23 @@ export default function Membersbar({ setSelectedChat, setChatIsOpen, chats }) {
     <div className="h-screen w-[200px] border border-border p-5">
       <h2 className="font-medium text-lg mb-5">Membros </h2>
       {users
-        ? users.map((user) => (
-            <div
-              key={user.id}
-              className="flex gap-2 items-center text-sm py-2.5"
-              role="button"
-              onClick={() => openChat(user.id, user.name)}
-            >
+        ? users
+            .filter((u) => u.id != user.uid)
+            .map((user) => (
               <div
-                className={`${
-                  user.online ? "bg-green-500" : "bg-red-500"
-                } h-3 w-3  rounded-full`}
-              />
-              <p className="font-medium">{user.name}</p>
-            </div>
-          ))
+                key={user.id}
+                className="flex gap-2 items-center text-sm py-2.5"
+                role="button"
+                onClick={() => openChat(user.id, user.name)}
+              >
+                <div
+                  className={`${
+                    user.online ? "bg-green-500" : "bg-red-500"
+                  } h-3 w-3  rounded-full`}
+                />
+                <p className="font-medium">{user.name}</p>
+              </div>
+            ))
         : [...Array(usersLength)].map((_, index) => (
             <MemberSkeleton key={index} />
           ))}

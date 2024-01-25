@@ -10,7 +10,7 @@ export default function Message({ message }) {
       className={`${getMessagePosition(
         message.author,
         user.uid
-      )} p-2.5 rounded-lg w-fit text-secondary`}
+      )} p-1.5 px-2.5 rounded-lg w-fit text-secondary mt-2 text-sm`}
     >
       {message.content}
     </div>
