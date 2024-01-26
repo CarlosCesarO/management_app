@@ -28,7 +28,11 @@ export default function Membersbar({
         chat.participants.includes(user.uid)
     );
     setChatIsOpen(true);
-    setSelectedChat({ id: chat.id, recipient: userName });
+    setSelectedChat({
+      id: chat?.id,
+      recipient: userName,
+      participants: [userId, user.uid],
+    });
   };
 
   useEffect(() => {

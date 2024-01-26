@@ -14,7 +14,7 @@ import Message from "./Message";
 import getInitials from "@/utils/getInitials";
 import { useFirestore } from "@/hooks/useFirestore";
 import { useState } from "react";
-import { Cross1Icon } from "@radix-ui/react-icons";
+import { ChevronLeftIcon, Cross1Icon } from "@radix-ui/react-icons";
 
 const handleKeyDown = (e) => {
   if (e.key === "Enter") {
@@ -31,7 +31,8 @@ export default function Chat({
   users,
 }) {
   const { user } = useAuthContext();
-  const { addSubDocument: createMessage } = useFirestore("chats");
+  const { addDocument: createChat, addSubDocument: createMessage } =
+    useFirestore("chats");
   const [messageContent, setMessageContent] = useState("");
 
   const chat = chats.find((chat) => {
@@ -48,6 +49,11 @@ export default function Chat({
 
   const sendMessage = async () => {
     if (messageContent == "") return;
+
+    if (!chat?.id) {
+      await createChat({ participants: [...chat.participants] });
+    }
+
     await createMessage(chat?.id, "messages", {
       author: user.uid,
       createdAt: new Date(),
@@ -62,17 +68,64 @@ export default function Chat({
     setSelectedChat(null);
   };
 
+  const openChat = (chat, userName) => {
+    setChatIsOpen(true);
+    setSelectedChat({
+      id: chat.id,
+      recipient: userName,
+    });
+  };
+
+  const formatMessageDate = (dateObj) => {
+    const now = new Date();
+    const dayInMilliseconds = 24 * 60 * 60 * 1000;
+    const daysOfWeek = [
+      "domingo",
+      "segunda-feira",
+      "terça-feira",
+      "quarta-feira",
+      "quinta-feira",
+      "sexta-feira",
+      "sábado",
+    ];
+
+    const diffInDays = Math.floor((now - dateObj) / dayInMilliseconds);
+
+    if (diffInDays === 0) {
+      return dateObj.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    if (diffInDays === 1) {
+      return "Ontem";
+    }
+
+    if (diffInDays >= 2 && diffInDays < 7) {
+      return daysOfWeek[dateObj.getDay()];
+    }
+
+    return dateObj.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "2-digit",
+    });
+  };
+
   return (
     <div className="fixed bottom-32 right-[248px] h-[500px] bg-input w-96 rounded-lg p-5 drop-shadow-2xl border border-foreground/10">
       <div className="flex flex-col h-full">
-        <Button
-          variant="ghost"
-          className="absolute top-2 right-2"
-          onClick={closeChat}
-        >
-          <Cross1Icon />
-        </Button>
         <div className="flex items-center gap-3">
+          {selectedChat && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setSelectedChat(null)}
+            >
+              <ChevronLeftIcon className="w-6 h-6" />
+            </Button>
+          )}
           {selectedChat && (
             <Avatar>
               <AvatarImage src="" />
@@ -81,10 +134,18 @@ export default function Chat({
               </AvatarFallback>
             </Avatar>
           )}
-          <p className="font-medium">
+          <p className={`${selectedChat ? "" : "text-lg"}`}>
             {selectedChat?.recipient || "Conversas"}
           </p>
         </div>
+        <Button
+          variant="ghost"
+          className="absolute top-2 right-2"
+          size="icon"
+          onClick={closeChat}
+        >
+          <Cross1Icon />
+        </Button>
         <Separator className="bg-foreground/10 my-4" />
         <ScrollArea className="flex-grow">
           {selectedChat
@@ -93,22 +154,42 @@ export default function Chat({
                   Não há mensagens para exibir.
                 </p>
               )
-            : chats?.map((chat) => (
-                <div key={chat.id}>
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src="" />
-                    <AvatarFallback className="bg-primary/50">
-                      {getInitials(
-                        users.find(
-                          (u) =>
-                            chat.participants.includes(u.id) &&
-                            u.id !== user.uid
-                        ).name
-                      )}
-                    </AvatarFallback>
-                  </Avatar>
-                </div>
-              )) || (
+            : chats?.map((chat) => {
+                const chatUser = users.find(
+                  (u) => chat.participants.includes(u.id) && u.id !== user.uid
+                );
+                return (
+                  <>
+                    {" "}
+                    <div
+                      key={chat.id}
+                      onClick={() => openChat(chat, chatUser.name)}
+                      role="button"
+                    >
+                      <div className="flex gap-2.5">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src="" />
+                          <AvatarFallback className="bg-primary/50">
+                            {getInitials(chatUser.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{chatUser.name}</p>
+                          <p className="text-muted-foreground text-sm ">
+                            {chat.lastMessage.content}
+                          </p>
+                        </div>
+                        <p className="absolute top-1 right-2 text-muted-foreground text-xs">
+                          {formatMessageDate(
+                            chat.lastMessage.createdAt.toDate()
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                    <Separator className="bg-foreground/10 my-4" />
+                  </>
+                );
+              }) || (
                 <p className="text-foreground/50 text-sm">
                   Não há conversas para exibir.
                 </p>
