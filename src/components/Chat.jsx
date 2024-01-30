@@ -15,6 +15,7 @@ import getInitials from "@/utils/getInitials";
 import { useFirestore } from "@/hooks/useFirestore";
 import { useState } from "react";
 import { ChevronLeftIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { timestamp } from "@/firebase/config";
 
 const handleKeyDown = (e) => {
   if (e.key === "Enter") {
@@ -31,8 +32,11 @@ export default function Chat({
   users,
 }) {
   const { user } = useAuthContext();
-  const { addDocument: createChat, addSubDocument: createMessage } =
-    useFirestore("chats");
+  const {
+    updateDocument: updateChat,
+    addDocument: createChat,
+    addSubDocument: createMessage,
+  } = useFirestore("chats");
   const [messageContent, setMessageContent] = useState("");
 
   const chat = chats.find((chat) => {
@@ -49,15 +53,23 @@ export default function Chat({
 
   const sendMessage = async () => {
     if (messageContent == "") return;
+    let chatId;
 
     if (!chat?.id) {
-      await createChat({ participants: [...chat.participants] });
+      const { payload } = await createChat({
+        participants: [...selectedChat.participants],
+      });
+      chatId = payload.id;
     }
 
-    await createMessage(chat?.id, "messages", {
+    await createMessage(chat?.id || chatId, "messages", {
       author: user.uid,
       createdAt: new Date(),
       content: messageContent,
+    });
+
+    await updateChat(chat?.id || chatId, {
+      lastMessage: { content: messageContent, createdAt: timestamp },
     });
 
     setMessageContent("");
@@ -149,7 +161,10 @@ export default function Chat({
         <Separator className="bg-foreground/10 my-4" />
         <ScrollArea className="flex-grow">
           {selectedChat
-            ? messages?.map((message) => <Message message={message} />) || (
+            ? (messages?.length &&
+                messages?.map((message) => (
+                  <Message key={message.id} message={message} />
+                ))) || (
                 <p className="text-foreground/50 text-sm">
                   Não há mensagens para exibir.
                 </p>
@@ -160,11 +175,11 @@ export default function Chat({
                 );
                 return (
                   <>
-                    {" "}
                     <div
                       key={chat.id}
                       onClick={() => openChat(chat, chatUser.name)}
                       role="button"
+                      className="relative"
                     >
                       <div className="flex gap-2.5">
                         <Avatar className="h-12 w-12">
