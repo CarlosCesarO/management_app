@@ -79,7 +79,7 @@ const labelOptions = [
   { route: "/standy", name: "Em Standby", icon: <LabelSvg color="#5fb756" /> },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ rerender }) {
   const navigate = useNavigate();
   const { logout, error, isPending } = useLogout();
   const { user } = useAuthContext();
@@ -91,7 +91,7 @@ export default function Sidebar() {
       </div>
       <div className="flex  gap-3 p-5">
         <Avatar>
-          <AvatarImage src="" />
+          <AvatarImage src={user.photoURL} />
           <AvatarFallback className="bg-primary/50">
             {getInitials(user.displayName)}
           </AvatarFallback>
@@ -168,6 +168,7 @@ export default function Sidebar() {
           Sair da Conta
         </Button>
       </div>
+      {rerender && <span className="hidden"> </span>}
     </nav>
   );
 }

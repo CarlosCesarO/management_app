@@ -21,6 +21,7 @@ function App() {
   const [selectedChat, setSelectedChat] = useState(null);
   const { documents: users } = useCollection("users");
   const { documents: chats } = useCollection("chats");
+  const [rerender, setRerender] = useState(false);
 
   if (!authIsReady) return <Loading />;
 
@@ -30,11 +31,16 @@ function App() {
         <BrowserRouter>
           {user ? (
             <>
-              <Sidebar />
+              <Sidebar rerender={rerender} />
               <div className="flex-grow">
                 <Routes>
                   <Route exact path="/" element={<Home />} />
-                  <Route path="/profile" element={<Profile />} />
+                  <Route
+                    path="/profile"
+                    element={
+                      <Profile rerender={rerender} setRerender={setRerender} />
+                    }
+                  />
                   <Route path="/projects" element={<Projects />} />
                   <Route path="*" element={<Home />} />
                 </Routes>
