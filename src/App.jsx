@@ -14,6 +14,7 @@ import Chat from "./components/Chat";
 import ChatButton from "./components/ChatButton";
 import { useState } from "react";
 import { useCollection } from "./hooks/useCollection";
+import Tasks from "./pages/Tasks/Tasks";
 
 function App() {
   const { user, authIsReady } = useAuthContext();
@@ -41,7 +42,7 @@ function App() {
                       <Profile rerender={rerender} setRerender={setRerender} />
                     }
                   />
-                  <Route path="/projects" element={<Projects />} />
+                  <Route path="/tasks" element={<Tasks />} />
                   <Route path="*" element={<Home />} />
                 </Routes>
               </div>

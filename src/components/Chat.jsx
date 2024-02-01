@@ -174,35 +174,31 @@ export default function Chat({
                   (u) => chat.participants.includes(u.id) && u.id !== user.uid
                 );
                 return (
-                  <>
-                    <div
-                      key={chat.id}
-                      onClick={() => openChat(chat, chatUser.name)}
-                      role="button"
-                      className="relative"
-                    >
-                      <div className="flex gap-2.5">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src="" />
-                          <AvatarFallback className="bg-primary/50">
-                            {getInitials(chatUser.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium">{chatUser.name}</p>
-                          <p className="text-muted-foreground text-sm ">
-                            {chat.lastMessage.content}
-                          </p>
-                        </div>
-                        <p className="absolute top-1 right-2 text-muted-foreground text-xs">
-                          {formatMessageDate(
-                            chat.lastMessage.createdAt.toDate()
-                          )}
+                  <div
+                    key={chat.id}
+                    onClick={() => openChat(chat, chatUser.name)}
+                    role="button"
+                    className="relative"
+                  >
+                    <div className="flex gap-2.5">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src="" />
+                        <AvatarFallback className="bg-primary/50">
+                          {getInitials(chatUser.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">{chatUser.name}</p>
+                        <p className="text-muted-foreground text-sm ">
+                          {chat.lastMessage.content}
                         </p>
                       </div>
+                      <p className="absolute top-1 right-2 text-muted-foreground text-xs">
+                        {formatMessageDate(chat.lastMessage.createdAt.toDate())}
+                      </p>
                     </div>
                     <Separator className="bg-foreground/10 my-4" />
-                  </>
+                  </div>
                 );
               }) || (
                 <p className="text-foreground/50 text-sm">
