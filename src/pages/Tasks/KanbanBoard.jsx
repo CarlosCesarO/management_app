@@ -24,7 +24,32 @@ export default function KanbanBoard() {
   const [state, setState] = useState(initialData);
 
   const onDragEnd = (result) => {
-    // TODO: handle reordering
+    const { destination, source, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const column = state.columns[source.droppableId];
+    const newTasksIds = Array.from(column.taskIds);
+    newTasksIds.splice(source.index, 1);
+    newTasksIds.splice(destination.index, 0, draggableId);
+
+    const newColumn = { ...column, taskIds: newTasksIds };
+
+    const newState = {
+      ...state,
+      columns: { ...state.columns, [newColumn.id]: newColumn },
+    };
+
+    setState(newState);
   };
 
   return (
