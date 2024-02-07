@@ -7,12 +7,17 @@ export default function Column({ column, tasks }) {
     <div className="fake-container bg-secondary p-5 border border-border rounded-xl">
       <h3>{column.title}</h3>
       <Droppable droppableId={column.id}>
-        {() => {
+        {(provided) => {
           return (
-            <div className="task-list">
-              {tasks.map((task) => (
-                <Task key={task.id} task={task} />
+            <div
+              className="task-list"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {tasks.map((task, index) => (
+                <Task key={task.id} task={task} index={index} />
               ))}
+              {provided.placeholder}
             </div>
           );
         }}
