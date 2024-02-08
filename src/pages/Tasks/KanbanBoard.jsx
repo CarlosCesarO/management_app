@@ -16,8 +16,11 @@ const initialData = {
       title: "Backlog",
       taskIds: ["task-1", "task-2", "task-3", "task-4"],
     },
+    "column-2": { id: "column-2", title: "To Do", taskIds: [] },
+    "column-3": { id: "column-3", title: "Doing", taskIds: [] },
+    "column-4": { id: "column-4", title: "Done", taskIds: [] },
   },
-  columnOrder: ["column-1"],
+  columnOrder: ["column-1", "column-2", "column-3", "column-4"],
 };
 
 export default function KanbanBoard() {
@@ -37,19 +40,45 @@ export default function KanbanBoard() {
       return;
     }
 
-    const column = state.columns[source.droppableId];
-    const newTasksIds = Array.from(column.taskIds);
-    newTasksIds.splice(source.index, 1);
-    newTasksIds.splice(destination.index, 0, draggableId);
+    const start = state.columns[source.droppableId];
+    const finish = state.columns[destination.droppableId];
 
-    const newColumn = { ...column, taskIds: newTasksIds };
+    if (destination.droppableId === source.droppableId) {
+      const column = state.columns[source.droppableId];
+      const newTasksIds = Array.from(column.taskIds);
+      newTasksIds.splice(source.index, 1);
+      newTasksIds.splice(destination.index, 0, draggableId);
 
-    const newState = {
-      ...state,
-      columns: { ...state.columns, [newColumn.id]: newColumn },
-    };
+      const newColumn = { ...column, taskIds: newTasksIds };
 
-    setState(newState);
+      const newState = {
+        ...state,
+        columns: { ...state.columns, [newColumn.id]: newColumn },
+      };
+
+      setState(newState);
+    } else {
+      const newStartTaskIds = Array.from(start.taskIds);
+      newStartTaskIds.splice(source.index, 1);
+
+      const newStart = { ...start, taskIds: newStartTaskIds };
+
+      const newFinishTaskIds = Array.from(finish.taskIds);
+      newFinishTaskIds.splice(destination.index, 0, draggableId);
+
+      const newFinish = { ...finish, taskIds: newFinishTaskIds };
+
+      const newState = {
+        ...state,
+        columns: {
+          ...state.columns,
+          [newStart.id]: newStart,
+          [newFinish.id]: newFinish,
+        },
+      };
+
+      setState(newState);
+    }
   };
 
   return (
