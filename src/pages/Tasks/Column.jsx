@@ -3,38 +3,18 @@ import Task from "./Task";
 import { Droppable } from "react-beautiful-dnd";
 import { Button } from "@/shadcn/components/ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
+import NewTaskDialog from "./NewTaskDialog";
 
 export default function Column({ column, tasks, state, setState }) {
-  const addTask = async () => {
-    const content = prompt("Qual o conteúdo da tarefa?");
-    if (!content) return;
-
-    const newTask = { id: Math.random().toString(36).substr(2, 9), content };
-
-    const newTasks = [...tasks, newTask];
-
-    const newState = {
-      ...state,
-      tasks: { ...state.tasks, [newTask.id]: newTask },
-      columns: {
-        ...state.columns,
-        [column.id]: {
-          ...state.columns[column.id],
-          taskIds: newTasks.map((task) => task.id),
-        },
-      },
-    };
-
-    setState(newState);
-  };
+  const addTask = async () => {};
   return (
-    <div className="fake-container w-1/4 bg-secondary/50 p-5 border border-border rounded-xl flex flex-col justify-between">
+    <div className="fake-container w-1/4 bg-secondary/50 p-5 border border-border rounded-xl flex flex-col ">
       <h3 className="font-semibold text-xl">{column.title}</h3>
       <Droppable droppableId={column.id}>
         {(provided) => {
           return (
             <div
-              className="mt-5 flex-grow min-h-[250px] flex flex-col"
+              className="mt-5 flex-grow min-h-[250px] flex flex-col justify-between"
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
@@ -46,14 +26,18 @@ export default function Column({ column, tasks, state, setState }) {
                 <div></div>
               )}
               {provided.placeholder}
-              <Button
-                size="xl"
-                className="border border-border mb-2 rounded-lg bg-background shadow-sm text-foreground text-md w-full hover:bg-primary/50 "
-                onClick={addTask}
-              >
-                <PlusIcon className="h-5 w-5 mr-2" />
-                Adicionar Tarefa
-              </Button>
+
+              <NewTaskDialog>
+                <Button
+                  size="xl"
+                  variant="outline"
+                  className=" shadow-sm"
+                  onClick={addTask}
+                >
+                  <PlusIcon className="h-5 w-5 mr-2" />
+                  Adicionar Tarefa
+                </Button>
+              </NewTaskDialog>
             </div>
           );
         }}
