@@ -1,4 +1,4 @@
-import { useStat } from "react";
+import { useState } from "react";
 import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
@@ -18,9 +18,7 @@ import {
   SelectValue,
 } from "@/shadcn/components/ui/select";
 
-export function DatePickerWithPresets() {
-  const [date, setDate] = useState();
-
+export function DatePickerWithPresets({ date, setDate }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -32,7 +30,7 @@ export function DatePickerWithPresets() {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date ? format(date, "PPP") : <span>Escolha uma data</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="flex w-auto flex-col space-y-2 p-2">
@@ -42,13 +40,13 @@ export function DatePickerWithPresets() {
           }
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select" />
+            <SelectValue placeholder="Selecione..." />
           </SelectTrigger>
           <SelectContent position="popper">
-            <SelectItem value="0">Today</SelectItem>
-            <SelectItem value="1">Tomorrow</SelectItem>
-            <SelectItem value="3">In 3 days</SelectItem>
-            <SelectItem value="7">In a week</SelectItem>
+            <SelectItem value="0">Hoje</SelectItem>
+            <SelectItem value="1">Amanhã</SelectItem>
+            <SelectItem value="3">Em 3 dias</SelectItem>
+            <SelectItem value="7">Em uma semana</SelectItem>
           </SelectContent>
         </Select>
         <div className="rounded-md border">

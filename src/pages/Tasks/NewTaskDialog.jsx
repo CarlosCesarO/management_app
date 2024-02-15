@@ -16,10 +16,25 @@ import { useState } from "react";
 import React from "react";
 import { Textarea } from "@/shadcn/components/ui/textarea";
 import { DatePickerWithPresets } from "@/components/DatePickerWithPresets";
+import Select from "react-select";
+import { useCollection } from "@/hooks/useCollection";
+import { useFirestore } from "@/hooks/useFirestore";
+import { useDocument } from "@/hooks/useDocument";
 
 export default function NewTaskDialog({ children }) {
+  const { documents: users } = useCollection("users");
+  const { document: teamDoc } = useDocument("teams", "7GfinEO9PorcuHkBNb0G");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState(null);
+  const [assignedMembers, setAssinedMembers] = useState([]);
+
+  const userOptions = users?.map((user) => ({
+    value: user.id,
+    label: user.name,
+  }));
+
+  const tagOptions = teamDoc?.tags.map((tag) => ({ value: tag, label: tag }));
 
   return (
     <Dialog>
@@ -51,12 +66,20 @@ export default function NewTaskDialog({ children }) {
             />
           </div>
           <div className="flex flex-col gap-1.5">
+            <Label htmlFor="name">Tags</Label>
+            <Select options={tagOptions} isMulti />
+          </div>
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="name">Data para conclusão</Label>
-            <DatePickerWithPresets />
+            <DatePickerWithPresets date={dueDate} setDate={setDueDate} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="name">Atribuir à</Label>
+            <Select options={userOptions} isMulti />
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit">Salvar alteraçöes</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
