@@ -15,6 +15,7 @@ import ChatButton from "./components/ChatButton";
 import { useState } from "react";
 import { useCollection } from "./hooks/useCollection";
 import Tasks from "./pages/Tasks/Tasks";
+import { Toaster } from "@/shadcn/components/ui/toaster";
 
 function App() {
   const { user, authIsReady } = useAuthContext();
@@ -29,6 +30,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <div className="App flex ">
+        <Toaster />
         <BrowserRouter>
           {user ? (
             <>
