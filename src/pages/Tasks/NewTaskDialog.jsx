@@ -23,11 +23,18 @@ import { useDocument } from "@/hooks/useDocument";
 import { PlusCircleIcon } from "lucide-react";
 import { arrayUnion } from "firebase/firestore";
 import { useToast } from "@/shadcn/components/ui/use-toast";
+import { UserDocContext } from "@/contexts/UserDocContext";
+import { useUserContext } from "@/hooks/useUserContext";
 
 export default function NewTaskDialog({ children }) {
   const { toast } = useToast();
-  const { documents: users } = useCollection("users");
-  const { document: teamDoc } = useDocument("teams", "7GfinEO9PorcuHkBNb0G");
+  const { userDoc } = useUserContext();
+  const { documents: users } = useCollection("users", [
+    "teamId",
+    "==",
+    userDoc.teamId,
+  ]);
+  const { document: teamDoc } = useDocument("teams", userDoc.teamId);
   const { updateDocument: updateTeam } = useFirestore("teams");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

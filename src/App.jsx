@@ -16,6 +16,15 @@ import { useState } from "react";
 import { useCollection } from "./hooks/useCollection";
 import Tasks from "./pages/Tasks/Tasks";
 import { Toaster } from "@/shadcn/components/ui/toaster";
+import { UserDocProvider } from "./contexts/UserDocContext";
+import { UsersProvider } from "./contexts/UsersContext";
+import { useDocument } from "./hooks/useDocument";
+
+const UserDocWrapper = ({ user, children }) => {
+  const { document: userDoc } = useDocument("users", user?.uid);
+  if (!userDoc) return <Loading />;
+  return children(userDoc);
+};
 
 function App() {
   const { user, authIsReady } = useAuthContext();
@@ -33,41 +42,52 @@ function App() {
         <Toaster />
         <BrowserRouter>
           {user ? (
-            <>
-              <Sidebar rerender={rerender} />
-              <div className="flex-grow">
-                <Routes>
-                  <Route exact path="/" element={<Home />} />
-                  <Route
-                    path="/profile"
-                    element={
-                      <Profile rerender={rerender} setRerender={setRerender} />
-                    }
-                  />
-                  <Route path="/tasks" element={<Tasks />} />
-                  <Route path="*" element={<Home />} />
-                </Routes>
-              </div>
-              <Membersbar
-                users={users}
-                chats={chats}
-                setSelectedChat={setSelectedChat}
-                setChatIsOpen={setChatIsOpen}
-              />
-              {chatIsOpen && (
-                <Chat
-                  users={users}
-                  setSelectedChat={setSelectedChat}
-                  setChatIsOpen={setChatIsOpen}
-                  chats={chats}
-                  selectedChat={selectedChat}
-                />
-              )}
-              <ChatButton
-                setChatIsOpen={setChatIsOpen}
-                setSelectedChat={setSelectedChat}
-              />
-            </>
+            <UserDocProvider user={user}>
+              <UserDocWrapper user={user}>
+                {(userDoc) => (
+                  <UsersProvider userDoc={userDoc}>
+                    <>
+                      <Sidebar rerender={rerender} />
+                      <div className="flex-grow">
+                        <Routes>
+                          <Route exact path="/" element={<Home />} />
+                          <Route
+                            path="/profile"
+                            element={
+                              <Profile
+                                rerender={rerender}
+                                setRerender={setRerender}
+                              />
+                            }
+                          />
+                          <Route path="/tasks" element={<Tasks />} />
+                          <Route path="*" element={<Home />} />
+                        </Routes>
+                      </div>
+                      <Membersbar
+                        users={users}
+                        chats={chats}
+                        setSelectedChat={setSelectedChat}
+                        setChatIsOpen={setChatIsOpen}
+                      />
+                      {chatIsOpen && (
+                        <Chat
+                          users={users}
+                          setSelectedChat={setSelectedChat}
+                          setChatIsOpen={setChatIsOpen}
+                          chats={chats}
+                          selectedChat={selectedChat}
+                        />
+                      )}
+                      <ChatButton
+                        setChatIsOpen={setChatIsOpen}
+                        setSelectedChat={setSelectedChat}
+                      />
+                    </>
+                  </UsersProvider>
+                )}
+              </UserDocWrapper>
+            </UserDocProvider>
           ) : (
             <Routes>
               <Route path="/login" element={<Login />} />
