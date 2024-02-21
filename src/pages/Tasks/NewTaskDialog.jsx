@@ -17,23 +17,19 @@ import React from "react";
 import { Textarea } from "@/shadcn/components/ui/textarea";
 import { DatePickerWithPresets } from "@/components/DatePickerWithPresets";
 import Select from "react-select";
-import { useCollection } from "@/hooks/useCollection";
 import { useFirestore } from "@/hooks/useFirestore";
 import { useDocument } from "@/hooks/useDocument";
 import { PlusCircleIcon } from "lucide-react";
 import { arrayUnion } from "firebase/firestore";
 import { useToast } from "@/shadcn/components/ui/use-toast";
-import { UserDocContext } from "@/contexts/UserDocContext";
 import { useUserContext } from "@/hooks/useUserContext";
+import { useUsersContext } from "@/hooks/useUsersContext";
 
-export default function NewTaskDialog({ children }) {
+export default function NewTaskDialog({ children, open, setOpen }) {
+  const { addSubDocument: addTask } = useFirestore("teams");
   const { toast } = useToast();
   const { userDoc } = useUserContext();
-  const { documents: users } = useCollection("users", [
-    "teamId",
-    "==",
-    userDoc.teamId,
-  ]);
+  const { users } = useUsersContext();
   const { document: teamDoc } = useDocument("teams", userDoc.teamId);
   const { updateDocument: updateTeam } = useFirestore("teams");
   const [title, setTitle] = useState("");
@@ -63,8 +59,31 @@ export default function NewTaskDialog({ children }) {
     setShowNewTagForm(false);
   };
 
+  const createTask = async (e) => {
+    e.preventDefault();
+    await addTask(userDoc.teamId, "tasks", {
+      title,
+      description,
+      tags: selectedTags.map((tag) => tag.value),
+      dueDate,
+      assignedMembers: assignedMembers.map((member) => member.value),
+      status: "backlog",
+      deleted: false,
+    });
+    toast({
+      title: "Nova Tarefa",
+      description: `A tarefa "${title}" foi adicionada com sucesso.`,
+    });
+    setTitle("");
+    setDescription("");
+    setSelectedTags([]);
+    setDueDate(null);
+    setAssignedMembers([]);
+    setOpen(false);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -131,7 +150,9 @@ export default function NewTaskDialog({ children }) {
           />
         </div>
         <DialogFooter>
-          <Button type="submit">Adicionar Tarefa</Button>
+          <Button type="submit" onClick={createTask}>
+            Adicionar Tarefa
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
