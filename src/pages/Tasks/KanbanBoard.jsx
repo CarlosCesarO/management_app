@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Column from "./Column";
 import { DragDropContext } from "react-beautiful-dnd";
+import { useSubcollection } from "@/hooks/useSubcollection";
+import { useUserContext } from "@/hooks/useUserContext";
 
 const initialData = {
   tasks: {},
@@ -11,15 +13,79 @@ const initialData = {
       title: "Backlog",
       taskIds: [],
     },
-    "column-2": { id: "column-2", title: "To Do", taskIds: [] },
-    "column-3": { id: "column-3", title: "Doing", taskIds: [] },
-    "column-4": { id: "column-4", title: "Done", taskIds: [] },
+    "column-2": { id: "column-2", title: "A fazer", taskIds: [] },
+    "column-3": { id: "column-3", title: "Em progresso", taskIds: [] },
+    "column-4": { id: "column-4", title: "Em revisão", taskIds: [] },
   },
   columnOrder: ["column-1", "column-2", "column-3", "column-4"],
 };
 
 export default function KanbanBoard() {
+  const { userDoc } = useUserContext();
+  const { documents: tasks } = useSubcollection(
+    "teams",
+    userDoc.teamId,
+    "tasks"
+  );
+
   const [state, setState] = useState(initialData);
+
+  useEffect(() => {
+    if (tasks) {
+      const tasksObject = tasks?.reduce((acc, task) => {
+        acc[task.id] = task;
+        return acc;
+      }, {});
+
+      const columnsTaskIds = {
+        Backlog: [],
+        "A fazer": [],
+        "Em progresso": [],
+        "Em revisão": [],
+      };
+
+      tasks?.forEach((task) => {
+        switch (task.status) {
+          case "backlog":
+            columnsTaskIds["Backlog"].push(task.id);
+            break;
+          case "todo":
+            columnsTaskIds["A fazer"].push(task.id);
+            break;
+          case "in_progress":
+            columnsTaskIds["Em progresso"].push(task.id);
+            break;
+          case "in_review ":
+            columnsTaskIds["Em revisão"].push(task.id);
+            break;
+        }
+      });
+
+      const newState = {
+        tasks: tasksObject,
+        columns: {
+          "column-1": {
+            ...initialData.columns["column-1"],
+            taskIds: columnsTaskIds["Backlog"],
+          },
+          "column-2": {
+            ...initialData.columns["column-2"],
+            taskIds: columnsTaskIds["A fazer"],
+          },
+          "column-3": {
+            ...initialData.columns["column-3"],
+            taskIds: columnsTaskIds["Em progresso"],
+          },
+          "column-4": {
+            ...initialData.columns["column-4"],
+            taskIds: columnsTaskIds["Em revisão"],
+          },
+        },
+      };
+
+      setState(newState);
+    }
+  }, [tasks]);
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
