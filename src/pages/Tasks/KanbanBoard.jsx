@@ -81,11 +81,14 @@ export default function KanbanBoard() {
             taskIds: columnsTaskIds["Em revisão"],
           },
         },
+        columnOrder: initialData.columnOrder,
       };
 
       setState(newState);
     }
   }, [tasks]);
+
+  console.log(state);
 
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
@@ -145,7 +148,7 @@ export default function KanbanBoard() {
   return (
     <div className="mt-10 flex gap-5">
       <DragDropContext onDragEnd={onDragEnd}>
-        {state.columnOrder.map((columnId) => {
+        {state.columnOrder?.map((columnId) => {
           const column = state.columns[columnId];
           const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
 
