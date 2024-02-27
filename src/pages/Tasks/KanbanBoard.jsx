@@ -88,8 +88,6 @@ export default function KanbanBoard() {
     }
   }, [tasks]);
 
-  console.log(state);
-
   const onDragEnd = (result) => {
     const { destination, source, draggableId } = result;
 
