@@ -1,12 +1,17 @@
-import { AvatarFallback, AvatarImage } from "@/shadcn/components/ui/avatar";
+import { useUsersContext } from "@/hooks/useUsersContext";
 import { Badge } from "@/shadcn/components/ui/badge";
 import getInitials from "@/utils/getInitials";
-import { Avatar } from "@radix-ui/react-avatar";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 
 export default function Task({ task, index }) {
+  const { users } = useUsersContext();
+
+  const assignedMembers = users.filter((u) =>
+    task.assignedMembers.includes(u.id)
+  );
+
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided, snapshot) => {
@@ -34,12 +39,16 @@ export default function Task({ task, index }) {
             </div>
 
             <div className="mt-5 flex">
-              {task.assignedMembers.map((member) => (
+              {assignedMembers.map((member) => (
                 <div
-                  className="-ml-2.5 bg-primary/50 rounded-full flex justify-center intems-center w-8 h-8"
-                  key={member}
+                  className="-ml-2 bg-foreground text-secondary rounded-full flex justify-center items-center w-8 h-8"
+                  key={member.id}
                 >
-                  CC
+                  {member.photoURL ? (
+                    <img src={member.photoURL} alt={member.name} />
+                  ) : (
+                    <span>{getInitials(member.name)}</span>
+                  )}
                 </div>
               ))}
             </div>
