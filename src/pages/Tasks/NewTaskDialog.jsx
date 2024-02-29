@@ -25,6 +25,13 @@ import { useToast } from "@/shadcn/components/ui/use-toast";
 import { useUserContext } from "@/hooks/useUserContext";
 import { useUsersContext } from "@/hooks/useUsersContext";
 
+const priorityOptions = [
+  { value: "low", label: "Baixa" },
+  { value: "medium", label: "Média" },
+  { value: "high", label: "Alta" },
+  { value: "standby", label: "Em standby" },
+];
+
 export default function NewTaskDialog({ children, open, setOpen }) {
   const { addSubDocument: addTask } = useFirestore("teams");
   const { toast } = useToast();
@@ -36,6 +43,7 @@ export default function NewTaskDialog({ children, open, setOpen }) {
   const [description, setDescription] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
   const [dueDate, setDueDate] = useState(null);
+  const [priority, setPriority] = useState("");
   const [assignedMembers, setAssignedMembers] = useState([]);
   const [newTag, setNewTag] = useState("");
   const [showNewTagForm, setShowNewTagForm] = useState(false);
@@ -61,6 +69,18 @@ export default function NewTaskDialog({ children, open, setOpen }) {
 
   const createTask = async (e) => {
     e.preventDefault();
+
+    if (
+      !title ||
+      !description ||
+      !priority ||
+      !dueDate ||
+      assignedMembers.length < 1 ||
+      !tags ||
+      selectedTags.length === 0
+    )
+      return;
+
     await addTask(userDoc.teamId, "tasks", {
       title,
       description,
@@ -69,6 +89,7 @@ export default function NewTaskDialog({ children, open, setOpen }) {
       assignedMembers: assignedMembers.map((member) => member.value),
       status: "backlog",
       deleted: false,
+      priority,
     });
     toast({
       title: "Nova Tarefa",
@@ -141,13 +162,21 @@ export default function NewTaskDialog({ children, open, setOpen }) {
             <DatePickerWithPresets date={dueDate} setDate={setDueDate} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="name">Atribuir à</Label>
+            <Label htmlFor="name">Prioridade</Label>
+            <Select
+              options={priorityOptions}
+              isMulti
+              onChange={(options) => setPriority(options.value)}
+            />
           </div>
-          <Select
-            options={userOptions}
-            isMulti
-            onChange={(options) => setAssignedMembers(options)}
-          />
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="name">Atribuir à</Label>
+            <Select
+              options={userOptions}
+              isMulti
+              onChange={(options) => setAssignedMembers(options)}
+            />
+          </div>
         </div>
         <DialogFooter>
           <Button type="submit" onClick={createTask}>
