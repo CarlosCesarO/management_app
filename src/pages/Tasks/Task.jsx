@@ -10,6 +10,21 @@ import calculateDateUntilDue from "@/utils/daysUntilDue";
 export default function Task({ task, index }) {
   const { users } = useUsersContext();
 
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "low":
+        return "#f7d372";
+      case "medium":
+        return "orange";
+      case "high":
+        return "#ff0000";
+      case "stadby":
+        return "#5abb54";
+      default:
+        return "grey";
+    }
+  };
+
   const assignedMembers = users.filter((u) =>
     task.assignedMembers.includes(u.id)
   );
@@ -60,8 +75,16 @@ export default function Task({ task, index }) {
                 ))}
               </div>
               <div className="flex items-center gap-2.5">
-                <LabelSvg />
-                Faltam {calculateDateUntilDue(task.dueDate?.seconds)} dias
+                <LabelSvg color={getPriorityColor(task.priority)} />
+                <p className="text-muted-foreground text-sm">
+                  {calculateDateUntilDue(task.dueDate.seconds) < 0
+                    ? `Em Atraso ${Math.abs(
+                        calculateDateUntilDue(task.dueDate.seconds)
+                      )} dias`
+                    : `Faltam ${calculateDateUntilDue(
+                        task.dueDate.seconds
+                      )} dias`}
+                </p>
               </div>
             </div>
           </div>

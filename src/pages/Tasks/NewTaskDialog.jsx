@@ -76,8 +76,7 @@ export default function NewTaskDialog({ children, open, setOpen }) {
       !priority ||
       !dueDate ||
       assignedMembers.length < 1 ||
-      !tags ||
-      selectedTags.length === 0
+      selectedTags.length < 1
     )
       return;
 
@@ -101,6 +100,7 @@ export default function NewTaskDialog({ children, open, setOpen }) {
     setDueDate(null);
     setAssignedMembers([]);
     setOpen(false);
+    setPriority("");
   };
 
   return (
@@ -165,8 +165,7 @@ export default function NewTaskDialog({ children, open, setOpen }) {
             <Label htmlFor="name">Prioridade</Label>
             <Select
               options={priorityOptions}
-              isMulti
-              onChange={(options) => setPriority(options.value)}
+              onChange={(option) => setPriority(option.value)}
             />
           </div>
           <div className="flex flex-col gap-1.5">
