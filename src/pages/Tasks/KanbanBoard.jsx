@@ -4,6 +4,8 @@ import Column from "./Column";
 import { DragDropContext } from "react-beautiful-dnd";
 import { useSubcollection } from "@/hooks/useSubcollection";
 import { useUserContext } from "@/hooks/useUserContext";
+import { useFirestore } from "@/hooks/useFirestore";
+import { useDocument } from "@/hooks/useDocument";
 
 const initialData = {
   tasks: {},
@@ -21,7 +23,12 @@ const initialData = {
 };
 
 export default function KanbanBoard() {
+  const { updateDocument: updateTeam, updateSubDocument: updateTask } =
+    useFirestore("teams");
   const { userDoc } = useUserContext();
+
+  const { document: teamDoc } = useDocument("teams", userDoc.teamId);
+
   const { documents: tasks } = useSubcollection(
     "teams",
     userDoc.teamId,
@@ -30,36 +37,34 @@ export default function KanbanBoard() {
 
   const [state, setState] = useState(initialData);
 
+  const getNewStatus = (title) => {
+    switch (title) {
+      case "Backlog":
+        return "backlog";
+      case "A fazer":
+        return "todo";
+      case "Em progresso":
+        return "in_progress";
+      case "Em revisão":
+        return "review";
+      default:
+        return "backlog";
+    }
+  };
+
   useEffect(() => {
-    if (tasks) {
+    if (tasks && teamDoc) {
       const tasksObject = tasks?.reduce((acc, task) => {
         acc[task.id] = task;
         return acc;
       }, {});
 
       const columnsTaskIds = {
-        Backlog: [],
-        "A fazer": [],
-        "Em progresso": [],
-        "Em revisão": [],
+        Backlog: [...teamDoc["column-1"]],
+        "A fazer": [...teamDoc["column-2"]],
+        "Em progresso": [...teamDoc["column-3"]],
+        "Em revisão": [...teamDoc["column-4"]],
       };
-
-      tasks?.forEach((task) => {
-        switch (task.status) {
-          case "backlog":
-            columnsTaskIds["Backlog"].push(task.id);
-            break;
-          case "todo":
-            columnsTaskIds["A fazer"].push(task.id);
-            break;
-          case "in_progress":
-            columnsTaskIds["Em progresso"].push(task.id);
-            break;
-          case "in_review ":
-            columnsTaskIds["Em revisão"].push(task.id);
-            break;
-        }
-      });
 
       const newState = {
         tasks: tasksObject,
@@ -88,7 +93,7 @@ export default function KanbanBoard() {
     }
   }, [tasks]);
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -107,11 +112,13 @@ export default function KanbanBoard() {
 
     if (destination.droppableId === source.droppableId) {
       const column = state.columns[source.droppableId];
-      const newTasksIds = Array.from(column.taskIds);
-      newTasksIds.splice(source.index, 1);
-      newTasksIds.splice(destination.index, 0, draggableId);
+      const newTaskIds = Array.from(column.taskIds);
+      newTaskIds.splice(source.index, 1);
+      newTaskIds.splice(destination.index, 0, draggableId);
 
-      const newColumn = { ...column, taskIds: newTasksIds };
+      await updateTeam(userDoc.teamId, { [source.droppableId]: newTaskIds });
+
+      const newColumn = { ...column, taskIds: newTaskIds };
 
       const newState = {
         ...state,
@@ -123,6 +130,12 @@ export default function KanbanBoard() {
       const newStartTaskIds = Array.from(start.taskIds);
       newStartTaskIds.splice(source.index, 1);
 
+      const movedTask = state.tasks[draggableId];
+
+      const updatedTask = { ...movedTask, status: getNewStatus(finish.title) };
+
+      const newTasks = { ...state.tasks, [updatedTask.id]: updatedTask };
+
       const newStart = { ...start, taskIds: newStartTaskIds };
 
       const newFinishTaskIds = Array.from(finish.taskIds);
@@ -130,14 +143,24 @@ export default function KanbanBoard() {
 
       const newFinish = { ...finish, taskIds: newFinishTaskIds };
 
+      await updateTeam(userDoc.teamId, {
+        [source.droppableId]: newStartTaskIds,
+        [destination.droppableId]: newFinishTaskIds,
+      });
+
       const newState = {
         ...state,
+        tasks: newTasks,
         columns: {
           ...state.columns,
           [newStart.id]: newStart,
           [newFinish.id]: newFinish,
         },
       };
+
+      await updateTask(userDoc.teamId, "tasks", updatedTask.id, {
+        status: getNewStatus(finish.title),
+      });
 
       setState(newState);
     }
