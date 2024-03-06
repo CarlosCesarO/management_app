@@ -47,6 +47,7 @@ export default function NewTaskDialog({ children, open, setOpen }) {
   const [assignedMembers, setAssignedMembers] = useState([]);
   const [newTag, setNewTag] = useState("");
   const [showNewTagForm, setShowNewTagForm] = useState(false);
+  const selectedColumn = localStorage.getItem("selectedColumn") || "backlog";
 
   const userOptions = users?.map((user) => ({
     value: user.id,
@@ -58,13 +59,28 @@ export default function NewTaskDialog({ children, open, setOpen }) {
   const addNewTag = async (e) => {
     e.preventDefault();
     if (!newTag) return;
-    await updateTeam("7GfinEO9PorcuHkBNb0G", { tags: arrayUnion(newTag) });
+    await updateTeam(userDoc.teamId, { tags: arrayUnion(newTag) });
     toast({
       title: "Nova tag",
       description: `A tag ${newTag} foi adicionada com sucesso`,
     });
     setNewTag("");
     setShowNewTagForm(false);
+  };
+
+  const getColumn = (status) => {
+    switch (status) {
+      case "backlog":
+        return "column-1";
+      case "todo":
+        return "column-2";
+      case "in_progress":
+        return "column-3";
+      case "in_review":
+        return "column-4";
+      default:
+        return "column-1";
+    }
   };
 
   const createTask = async (e) => {
@@ -80,16 +96,23 @@ export default function NewTaskDialog({ children, open, setOpen }) {
     )
       return;
 
-    await addTask(userDoc.teamId, "tasks", {
+    const { payload: taskId } = await addTask(userDoc.teamId, "tasks", {
       title,
       description,
       tags: selectedTags.map((tag) => tag.value),
       dueDate,
       assignedMembers: assignedMembers.map((member) => member.value),
-      status: "backlog",
+      status: selectedColumn,
       deleted: false,
       priority,
     });
+
+    const column = getColumn(selectedColumn);
+
+    await updateTeam(userDoc.teamId, {
+      [column]: arrayUnion(taskId),
+    });
+
     toast({
       title: "Nova Tarefa",
       description: `A tarefa "${title}" foi adicionada com sucesso.`,
@@ -108,7 +131,7 @@ export default function NewTaskDialog({ children, open, setOpen }) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Nova Tarefa</DialogTitle>
+          <DialogTitle>Nova Tarefa {selectedColumn}</DialogTitle>
           <DialogDescription>
             Prencha as informações da nova tarefa.
           </DialogDescription>

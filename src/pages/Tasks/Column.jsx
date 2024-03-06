@@ -1,13 +1,32 @@
-import React, { useState } from "react";
 import Task from "./Task";
 import { Droppable } from "react-beautiful-dnd";
 import { Button } from "@/shadcn/components/ui/button";
 import { PlusIcon } from "@radix-ui/react-icons";
 import NewTaskDialog from "./NewTaskDialog";
+import { useState } from "react";
 
-export default function Column({ column, tasks, state, setState }) {
-  const [showNewTaksDialog, setShowNewTaksDialog] = useState(false);
-  const addTask = async () => {};
+export default function Column({
+  column,
+  tasks,
+  showNewTaksDialog,
+  setShowNewTaksDialog,
+}) {
+  const [selectedColumn, setSelectedColumn] = useState("");
+
+  const getColumnName = (id) => {
+    switch (id) {
+      case "column-1":
+        return "backlog";
+      case "column-2":
+        return "todo";
+      case "column-3":
+        return "in_progress";
+      case "column-4":
+        return "in_review";
+      default:
+        return "backlog";
+    }
+  };
   return (
     <div className="fake-container w-1/4 bg-secondary/50 p-5 border border-border rounded-xl flex flex-col ">
       <h3 className="font-semibold text-xl">{column.title}</h3>
@@ -31,12 +50,19 @@ export default function Column({ column, tasks, state, setState }) {
               <NewTaskDialog
                 open={showNewTaksDialog}
                 setOpen={setShowNewTaksDialog}
+                selectedColumn={selectedColumn}
               >
                 <Button
                   size="xl"
                   variant="outline"
                   className=" shadow-sm"
-                  onClick={() => setShowNewTaksDialog(true)}
+                  onClick={() => {
+                    localStorage.setItem(
+                      "selectedColumn",
+                      getColumnName(column.id)
+                    );
+                    setShowNewTaksDialog(true);
+                  }}
                 >
                   <PlusIcon className="h-5 w-5 mr-2" />
                   Adicionar Tarefa

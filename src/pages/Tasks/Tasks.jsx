@@ -1,5 +1,5 @@
 import { Button } from "@/shadcn/components/ui/button";
-import { Input } from "@/shadcn/components/ui/input";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -11,6 +11,7 @@ import React from "react";
 import KanbanBoard from "./KanbanBoard";
 
 export default function Tasks() {
+  const [showNewTaksDialog, setShowNewTaksDialog] = useState(false);
   return (
     <div className="p-5">
       <div className="flex items-center justify-between mb-10">
@@ -20,7 +21,11 @@ export default function Tasks() {
             <MagnifyingGlassIcon className="h-6 w-6 text-muted-foreground  " />
             <input className="focus: outline-none " placeholder="Pesquisar " />
           </div>
-          <Button size="lg" className="text-lg w-64">
+          <Button
+            size="lg"
+            className="text-lg"
+            onClick={() => setShowNewTaksDialog(true)}
+          >
             <PlusIcon className="w-5 h-5 mr-2" /> Nova Tarefa
           </Button>
         </div>
@@ -40,7 +45,10 @@ export default function Tasks() {
           <PopoverContent>Filtros.</PopoverContent>
         </Popover>
       </div>
-      <KanbanBoard />
+      <KanbanBoard
+        showNewTaksDialog={showNewTaksDialog}
+        setShowNewTaksDialog={setShowNewTaksDialog}
+      />
     </div>
   );
 }

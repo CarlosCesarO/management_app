@@ -22,7 +22,10 @@ const initialData = {
   columnOrder: ["column-1", "column-2", "column-3", "column-4"],
 };
 
-export default function KanbanBoard() {
+export default function KanbanBoard({
+  showNewTaksDialog,
+  setShowNewTaksDialog,
+}) {
   const { updateDocument: updateTeam, updateSubDocument: updateTask } =
     useFirestore("teams");
   const { userDoc } = useUserContext();
@@ -171,12 +174,12 @@ export default function KanbanBoard() {
       <DragDropContext onDragEnd={onDragEnd}>
         {state.columnOrder?.map((columnId) => {
           const column = state.columns[columnId];
-          const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
+          const tasks = column.taskIds?.map((taskId) => state.tasks[taskId]);
 
           return (
             <Column
-              state={state}
-              setState={setState}
+              setShowNewTaksDialog={setShowNewTaksDialog}
+              showNewTaksDialog={showNewTaksDialog}
               key={column.id}
               column={column}
               tasks={tasks}
