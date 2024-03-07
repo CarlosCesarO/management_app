@@ -40,7 +40,12 @@ export default function Column({
             >
               {tasks.length ? (
                 tasks.map((task, index) => (
-                  <Task key={task.id} task={task} index={index} />
+                  <Task
+                    columnId={column.id}
+                    key={task?.id}
+                    task={task}
+                    index={index}
+                  />
                 ))
               ) : (
                 <div></div>
@@ -55,13 +60,12 @@ export default function Column({
                 <Button
                   size="xl"
                   variant="outline"
-                  className=" shadow-sm"
+                  className="shadow-sm"
                   onClick={() => {
-                    localStorage.setItem(
-                      "selectedColumn",
-                      getColumnName(column.id)
-                    );
+                    const columnName = getColumnName(column.id);
+                    localStorage.setItem("selectedColumn", columnName);
                     setShowNewTaksDialog(true);
+                    setSelectedColumn(columnName);
                   }}
                 >
                   <PlusIcon className="h-5 w-5 mr-2" />

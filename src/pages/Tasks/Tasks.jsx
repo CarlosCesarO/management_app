@@ -10,6 +10,21 @@ import { ChevronDown, FilterIcon } from "lucide-react";
 import React from "react";
 import KanbanBoard from "./KanbanBoard";
 
+const getColumnName = (id) => {
+  switch (id) {
+    case "column-1":
+      return "backlog";
+    case "column-2":
+      return "todo";
+    case "column-3":
+      return "in_progress";
+    case "column-4":
+      return "in_review";
+    default:
+      return "backlog";
+  }
+};
+
 export default function Tasks() {
   const [showNewTaksDialog, setShowNewTaksDialog] = useState(false);
   return (
@@ -24,7 +39,10 @@ export default function Tasks() {
           <Button
             size="lg"
             className="text-lg"
-            onClick={() => setShowNewTaksDialog(true)}
+            onClick={() => {
+              localStorage.setItem("selectedColumn", getColumnName());
+              setShowNewTaksDialog(true);
+            }}
           >
             <PlusIcon className="w-5 h-5 mr-2" /> Nova Tarefa
           </Button>

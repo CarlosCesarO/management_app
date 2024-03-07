@@ -6,9 +6,23 @@ import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import calculateDateUntilDue from "@/utils/daysUntilDue";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shadcn/components/ui/dropdown-menu";
+import { useFirestore } from "@/hooks/useFirestore";
+import { useUserContext } from "@/hooks/useUserContext";
+import { arrayRemove } from "firebase/firestore";
 
-export default function Task({ task, index }) {
+export default function Task({ task, index, columnId }) {
   const { users } = useUsersContext();
+  const { userDoc } = useUserContext();
+  const { deleteSubDocument: deleteTask, updateDocument: updateTeam } =
+    useFirestore("teams");
 
   const getPriorityColor = (priority) => {
     switch (priority) {
@@ -24,6 +38,15 @@ export default function Task({ task, index }) {
         return "grey";
     }
   };
+
+  const removeTask = async (taskId) => {
+    await deleteTask(userDoc.teamId, "tasks", taskId);
+    await updateTeam(userDoc.teamId, {
+      [columnId]: arrayRemove(taskId),
+    });
+  };
+
+  if (!task) return null;
 
   const assignedMembers = users.filter((u) =>
     task.assignedMembers.includes(u.id)
@@ -41,7 +64,19 @@ export default function Task({ task, index }) {
           >
             <div className="flex items-center justify-between">
               <h3 className="font-semibold"> {task.title}</h3>
-              <DotsHorizontalIcon className="h-6 w-6" role="button" />
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <DotsHorizontalIcon className="h-6 w-6" role="button" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Editar</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => removeTask(task.id)}>
+                    Remover
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             <div className="flex mt-1 gap-1 flex-wrap">
