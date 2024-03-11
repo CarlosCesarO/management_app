@@ -25,6 +25,9 @@ const initialData = {
 export default function KanbanBoard({
   showNewTaksDialog,
   setShowNewTaksDialog,
+  search,
+  selectedTag,
+  selectedMember,
 }) {
   const { updateDocument: updateTeam, updateSubDocument: updateTask } =
     useFirestore("teams");
@@ -175,6 +178,22 @@ export default function KanbanBoard({
         {state.columnOrder?.map((columnId) => {
           const column = state.columns[columnId];
           const tasks = column.taskIds?.map((taskId) => state.tasks[taskId]);
+          const filteredTasks = tasks.filter((task) => {
+            let shouldReturnTrue = true;
+
+            if (selectedTag) {
+              shouldReturnTrue = task.tags.includes(selectedTag);
+            }
+
+            if (selectedMember) {
+              shouldReturnTrue = task.assignedMembers.includes(selectedMember);
+            }
+            return (
+              shouldReturnTrue &&
+              (task.title.toLowerCase().includes(search.toLowerCase()) ||
+                task.description.toLowerCase().includes(search.toLowerCase()))
+            );
+          });
 
           return (
             <Column
@@ -182,7 +201,7 @@ export default function KanbanBoard({
               showNewTaksDialog={showNewTaksDialog}
               key={column.id}
               column={column}
-              tasks={tasks}
+              tasks={filteredTasks}
             />
           );
         })}
