@@ -2,6 +2,7 @@ import { Button } from "@/shadcn/components/ui/button";
 import {
   CalendarIcon,
   ChatBubbleIcon,
+  Cross2Icon,
   DashboardIcon,
   ExitIcon,
   FileTextIcon,
@@ -62,24 +63,32 @@ const projectOptions = [
 
 const labelOptions = [
   {
-    route: "/high",
+    value: "high",
     name: "Alta prioridade",
     icon: <LabelSvg color="#e04057" />,
   },
   {
-    route: "/mid",
+    value: "medium",
     name: "Média prioridade",
     icon: <LabelSvg color="#e58d3a" />,
   },
   {
-    route: "/low",
+    value: "low",
     name: "Baixa prioridade",
     icon: <LabelSvg color="#f8d376" />,
   },
-  { route: "/standy", name: "Em Standby", icon: <LabelSvg color="#5fb756" /> },
+  {
+    value: "standby",
+    name: "Em Standby",
+    icon: <LabelSvg color="#5fb756" />,
+  },
 ];
 
-export default function Sidebar({ rerender }) {
+export default function Sidebar({
+  rerender,
+  selectedPriority,
+  setSelectedPriority,
+}) {
   const navigate = useNavigate();
   const { logout, error, isPending } = useLogout();
   const { user } = useAuthContext();
@@ -131,17 +140,33 @@ export default function Sidebar({ rerender }) {
 
       <Separator className="my-4" />
 
-      <h2 className="font-semibold text-xl px-5 py-5 mb-4"> Rótulos</h2>
+      <h2 className="font-semibold text-xl px-5 py-5 mb-4"> Etiqueta</h2>
 
       {labelOptions.map((option) => (
         <div
-          key={option.route}
+          key={option.value}
           role="button"
-          className="px-5 py-1.5 flex items-center gap-e"
-          onClick={() => navigate(option.route)}
+          className="px-5 py-1.5 flex items-center justify-between"
         >
-          {option.icon}
-          <p className="text-md/90">{option.name}</p>
+          <div
+            className="flex  gap-3"
+            onClick={() => setSelectedPriority(option.value)}
+          >
+            {option.icon}
+            <p
+              className={`text-md/90 ${
+                selectedPriority === option.value ? "font-semibold" : ""
+              } `}
+            >
+              {option.name}
+            </p>
+          </div>
+          {option.value === selectedPriority && (
+            <Cross2Icon
+              role="button"
+              onClick={() => setSelectedPriority(null)}
+            />
+          )}
         </div>
       ))}
 

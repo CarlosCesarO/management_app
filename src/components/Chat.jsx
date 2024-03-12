@@ -17,13 +17,6 @@ import { useState } from "react";
 import { ChevronLeftIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { timestamp } from "@/firebase/config";
 
-const handleKeyDown = (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    sendMessage();
-  }
-};
-
 export default function Chat({
   selectedChat,
   chats,
@@ -51,7 +44,8 @@ export default function Chat({
     ["createdAt", "asc"]
   );
 
-  const sendMessage = async () => {
+  const sendMessage = async (e) => {
+    e.preventDefault();
     if (messageContent == "") return;
     let chatId;
 
@@ -206,14 +200,14 @@ export default function Chat({
                 </p>
               )}
         </ScrollArea>
-        <div className="flex gap-2.5">
+        <form onSubmit={sendMessage} className="flex gap-2.5">
           <Input
             value={messageContent}
             type="text"
             onChange={(e) => setMessageContent(e.target.value)}
           />
-          <Button onClick={sendMessage}>Enviar</Button>
-        </div>
+          <Button type="submit">Enviar</Button>
+        </form>
       </div>
     </div>
   );

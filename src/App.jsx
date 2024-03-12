@@ -33,6 +33,7 @@ function App() {
   const { documents: users } = useCollection("users");
   const { documents: chats } = useCollection("chats");
   const [rerender, setRerender] = useState(false);
+  const [selectedPriority, setSelectedPriority] = useState(null);
 
   if (!authIsReady) return <Loading />;
 
@@ -47,7 +48,11 @@ function App() {
                 {(userDoc) => (
                   <UsersProvider userDoc={userDoc}>
                     <>
-                      <Sidebar rerender={rerender} />
+                      <Sidebar
+                        selectedPriority={selectedPriority}
+                        setSelectedPriority={setSelectedPriority}
+                        rerender={rerender}
+                      />
                       <div className="flex-grow">
                         <Routes>
                           <Route exact path="/" element={<Home />} />
@@ -60,7 +65,12 @@ function App() {
                               />
                             }
                           />
-                          <Route path="/tasks" element={<Tasks />} />
+                          <Route
+                            path="/tasks"
+                            element={
+                              <Tasks selectedPriority={selectedPriority} />
+                            }
+                          />
                           <Route path="*" element={<Home />} />
                         </Routes>
                       </div>

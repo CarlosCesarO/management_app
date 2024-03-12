@@ -35,7 +35,7 @@ const getColumnName = (id) => {
   }
 };
 
-export default function Tasks() {
+export default function Tasks({ selectedPriority }) {
   const [showNewTaksDialog, setShowNewTaksDialog] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedTag, setSelectedTag] = useState(null);
@@ -101,6 +101,16 @@ export default function Tasks() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+          {selectedTag && (
+            <Badge className={"cursor-default"}>
+              {selectedTag}
+              <Cross2Icon
+                onClick={() => setSelectedTag(null)}
+                role="button"
+                className="ml-2.5"
+              />
+            </Badge>
+          )}
         </div>
         <div className="flex gap-2.5">
           <DropdownMenu>
@@ -145,6 +155,7 @@ export default function Tasks() {
         search={search}
         selectedTag={selectedTag}
         selectedMember={selectedMember}
+        selectedPriority={selectedPriority}
         showNewTaksDialog={showNewTaksDialog}
         setShowNewTaksDialog={setShowNewTaksDialog}
       />

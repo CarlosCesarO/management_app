@@ -25,6 +25,7 @@ const initialData = {
 export default function KanbanBoard({
   showNewTaksDialog,
   setShowNewTaksDialog,
+  selectedPriority,
   search,
   selectedTag,
   selectedMember,
@@ -188,6 +189,11 @@ export default function KanbanBoard({
             if (selectedMember) {
               shouldReturnTrue = task.assignedMembers.includes(selectedMember);
             }
+
+            if (selectedPriority) {
+              shouldReturnTrue = task.priority === selectedPriority;
+            }
+
             return (
               shouldReturnTrue &&
               (task.title.toLowerCase().includes(search.toLowerCase()) ||
