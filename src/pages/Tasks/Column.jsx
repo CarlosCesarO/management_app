@@ -28,7 +28,7 @@ export default function Column({
     }
   };
   return (
-    <div className="fake-container w-1/4 bg-secondary/50 p-5 border border-border rounded-xl flex flex-col ">
+    <div className="fake-container sm:w-1/4 bg-secondary/50 p-5 border border-border rounded-xl flex flex-col ">
       <h3 className="font-semibold text-xl">{column.title}</h3>
       <Droppable droppableId={column.id}>
         {(provided) => {

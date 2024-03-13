@@ -174,8 +174,8 @@ export default function KanbanBoard({
   };
 
   return (
-    <div className="mt-10 flex gap-5">
-      <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <div className="mt-10 flex flex-col sm:flex-row gap-5">
         {state.columnOrder?.map((columnId) => {
           const column = state.columns[columnId];
           const tasks = column.taskIds?.map((taskId) => state.tasks[taskId]);
@@ -211,7 +211,7 @@ export default function KanbanBoard({
             />
           );
         })}
-      </DragDropContext>
-    </div>
+      </div>
+    </DragDropContext>
   );
 }

@@ -10,7 +10,7 @@ export default function ChatButton({ setChatIsOpen, setSelectedChat }) {
     <Button
       variant="outline"
       size="icon"
-      className="h-16 bg-primary text-background w-16 fixed bottom-12 right-[224px] rounded-full p-2.5 drop-shadow-xl"
+      className="h-16 bg-primary text-background w-16 fixed bottom-4 right-4 sm:right-[224px] rounded-full p-2.5 drop-shadow-xl"
       onClick={handleClick}
     >
       <ChatBubbleIcon className="h-8 w-8" />

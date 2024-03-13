@@ -45,16 +45,16 @@ export default function Tasks({ selectedPriority }) {
   const { users } = useUsersContext();
 
   return (
-    <div className="p-5">
-      <div className="flex items-center justify-between mb-10">
+    <div className="p-5 sm:p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10">
         <h1 className="text-2xl font-semibold">Tarefas do Time</h1>
-        <div className="flex items-center gap-5 ">
-          <div className="flex items-center gap-2.5 border border-border p y-2.5 px-5 rounded-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-5 ">
+          <div className="flex items-center gap-2.5 border border-border py-2.5 px-5 rounded-lg mt-5 sm:mt-0">
             <MagnifyingGlassIcon className="h-6 w-6 text-muted-foreground  " />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="focus: outline-none "
+              className="focus: outline-none bg-transparent w-full"
               placeholder="Pesquisar "
             />
             <Cross2Icon

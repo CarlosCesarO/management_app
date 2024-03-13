@@ -120,7 +120,7 @@ export default function Chat({
   };
 
   return (
-    <div className="fixed bottom-32 right-[248px] h-[500px] bg-input w-96 rounded-lg p-5 drop-shadow-2xl border border-foreground/10">
+    <div className="fixed bottom-24 right-5 sm:right-[248px] h-[500px] w-[350px]sm:w-96 bg-input rounded-lg p-5 drop-shadow-2xl border border-foreground/10">
       <div className="flex flex-col h-full">
         <div className="flex items-center gap-3">
           {selectedChat && (

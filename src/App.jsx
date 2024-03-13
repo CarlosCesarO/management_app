@@ -19,6 +19,8 @@ import { Toaster } from "@/shadcn/components/ui/toaster";
 import { UserDocProvider } from "./contexts/UserDocContext";
 import { UsersProvider } from "./contexts/UsersContext";
 import { useDocument } from "./hooks/useDocument";
+import useMediaQuery from "./hooks/useMediaQuery";
+import Topbar from "./components/Topbar";
 
 const UserDocWrapper = ({ user, children }) => {
   const { document: userDoc } = useDocument("users", user?.uid);
@@ -34,12 +36,13 @@ function App() {
   const { documents: chats } = useCollection("chats");
   const [rerender, setRerender] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState(null);
+  const isMobile = useMediaQuery("(max-width: 640px)");
 
   if (!authIsReady) return <Loading />;
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <div className="App flex ">
+      <div className="App flex flex-col sm:flex-grow">
         <Toaster />
         <BrowserRouter>
           {user ? (
@@ -48,11 +51,15 @@ function App() {
                 {(userDoc) => (
                   <UsersProvider userDoc={userDoc}>
                     <>
-                      <Sidebar
-                        selectedPriority={selectedPriority}
-                        setSelectedPriority={setSelectedPriority}
-                        rerender={rerender}
-                      />
+                      {isMobile ? (
+                        <Topbar />
+                      ) : (
+                        <Sidebar
+                          selectedPriority={selectedPriority}
+                          setSelectedPriority={setSelectedPriority}
+                          rerender={rerender}
+                        />
+                      )}
                       <div className="flex-grow">
                         <Routes>
                           <Route exact path="/" element={<Home />} />
@@ -74,12 +81,14 @@ function App() {
                           <Route path="*" element={<Home />} />
                         </Routes>
                       </div>
-                      <Membersbar
-                        users={users}
-                        chats={chats}
-                        setSelectedChat={setSelectedChat}
-                        setChatIsOpen={setChatIsOpen}
-                      />
+                      {!isMobile && (
+                        <Membersbar
+                          users={users}
+                          chats={chats}
+                          setSelectedChat={setSelectedChat}
+                          setChatIsOpen={setChatIsOpen}
+                        />
+                      )}
                       {chatIsOpen && (
                         <Chat
                           users={users}
