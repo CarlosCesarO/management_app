@@ -2,7 +2,6 @@ import "./App.css";
 import Membersbar from "./components/Membersbar";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home/Home";
-import Projects from "./pages/Projects/Projects";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
@@ -42,7 +41,7 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <div className="App flex flex-col sm:flex-grow">
+      <div className="App flex flex-col sm:flex-row">
         <Toaster />
         <BrowserRouter>
           {user ? (
@@ -54,13 +53,15 @@ function App() {
                       {isMobile ? (
                         <Topbar />
                       ) : (
-                        <Sidebar
-                          selectedPriority={selectedPriority}
-                          setSelectedPriority={setSelectedPriority}
-                          rerender={rerender}
-                        />
+                        <div className="w-[250px] h-screen fixed top-0 left-0 overflow-y-auto">
+                          <Sidebar
+                            selectedPriority={selectedPriority}
+                            setSelectedPriority={setSelectedPriority}
+                            rerender={rerender}
+                          />
+                        </div>
                       )}
-                      <div className="flex-grow">
+                      <div className="mt-12 sm:mt-10  flex-grow ml-[250px] ">
                         <Routes>
                           <Route exact path="/" element={<Home />} />
                           <Route
