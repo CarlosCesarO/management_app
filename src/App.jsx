@@ -61,7 +61,7 @@ function App() {
                           />
                         </div>
                       )}
-                      <div className="mt-12 sm:mt-10  flex-grow ml-[250px] ">
+                      <div className="mt-12 sm:mt-10 flex-grow sm:ml-[250px] sm:mr-[200px] ">
                         <Routes>
                           <Route exact path="/" element={<Home />} />
                           <Route
@@ -83,12 +83,14 @@ function App() {
                         </Routes>
                       </div>
                       {!isMobile && (
-                        <Membersbar
-                          users={users}
-                          chats={chats}
-                          setSelectedChat={setSelectedChat}
-                          setChatIsOpen={setChatIsOpen}
-                        />
+                        <div className="w-[200px] h-screen fixed top-0 right-0 overflow-y-auto">
+                          <Membersbar
+                            users={users}
+                            chats={chats}
+                            setSelectedChat={setSelectedChat}
+                            setChatIsOpen={setChatIsOpen}
+                          />
+                        </div>
                       )}
                       {chatIsOpen && (
                         <Chat

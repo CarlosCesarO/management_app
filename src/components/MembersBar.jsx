@@ -42,7 +42,7 @@ export default function Membersbar({
   }, [users]);
 
   return (
-    <div className="h-screen w-[200px] border border-border p-5">
+    <div className="relative h-screen w-[200px] border border-border p-5">
       <h2 className="font-medium text-lg mb-5">Membros </h2>
       {users
         ? users

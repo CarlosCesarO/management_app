@@ -93,12 +93,12 @@ export default function Sidebar({
   const { logout, error, isPending } = useLogout();
   const { user } = useAuthContext();
 
-  // const handleLogout = () => {
-  //   logout();
-  // };
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
-    <nav className="relative overflow-y-auto  min-h-[calc(100vh_-_64px)] hidden sm:flex sm:flex-col sm:justify-between h-full  w-[250px] bg-accent border border-border">
+    <nav className="relative overflow-y-auto min-h-[calc(100vh_-_64px)] hidden sm:flex sm:flex-col sm:justify-between h-full w-[250px] bg-accent border border-border">
       <div className="fixed h-[calc(100vh_-_96px)] w-[250px] sm:flex-grow sm:flex sm:flex-col sm:justify-between">
         <div className="p-5">
           <Logo size="sm" />
@@ -174,7 +174,7 @@ export default function Sidebar({
             size="noPadding"
             variant="ghost"
             onClick={logout}
-            className="opacity-50"
+            className="opacity-50 py-2.5 "
           >
             <InfoCircledIcon className="w-4 h-4 mr-2" />
             Central de Ajuda
@@ -183,8 +183,8 @@ export default function Sidebar({
           <Button
             size="noPadding"
             variant="ghost"
-            onClick={logout}
-            className="opacity-50"
+            onClick={handleLogout}
+            className="opacity-50 py-2.5"
           >
             <ExitIcon className="w-4 h-4 mr-2" />
             Sair da Conta
