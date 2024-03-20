@@ -30,12 +30,13 @@ export const useSignup = () => {
 
       // Create a user document
       const createdAt = timestamp;
-      setDoc(doc(db, "users", res.user.uid), {
+      await setDoc(doc(db, "users", res.user.uid), {
         id: res.user.uid,
         online: true,
         createdAt,
         email: email,
         name: name,
+        teamId: "7GfinEO9PorcuHkBNb0G", //ARRUMAR AQUI
       });
 
       // Dispatch login action

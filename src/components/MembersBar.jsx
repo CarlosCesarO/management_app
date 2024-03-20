@@ -22,7 +22,7 @@ export default function Membersbar({
   const { user } = useAuthContext();
 
   const openChat = (userId, userName) => {
-    const chat = chats.find(
+    const chat = chats?.find(
       (chat) =>
         chat.participants.includes(userId) &&
         chat.participants.includes(user.uid)
