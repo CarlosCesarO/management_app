@@ -53,7 +53,7 @@ export default function Chat({
       const { payload } = await createChat({
         participants: [...selectedChat.participants],
       });
-      chatId = payload.id;
+      chatId = payload;
     }
 
     await createMessage(chat?.id || chatId, "messages", {

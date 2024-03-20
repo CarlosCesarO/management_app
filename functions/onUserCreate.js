@@ -4,7 +4,7 @@ const mailchimp = require("@mailchimp/mailchimp_marketing");
 
 mailchimp.setConfig({
   apiKey: functions.config().mailchimp.apiKey,
-  server: "us12",
+  server: "us18",
 });
 
 if (admin.apps.length === 0) {
@@ -17,18 +17,52 @@ exports.onUserCreate = functions.firestore
     const userData = snap.data();
     const email = userData.email;
 
-    const listId = "14ac8d6a41";
+    const listId = "d1be1c178c";
+
     const subscribingUser = {
       firstName: userData.name.split(" ")[0],
       lastName: userData.name.split(" ")[1],
       email,
     };
-  });
 
-async function updateTags(subscriberHash, tags) {
-  const response = await mailchimp.lists.updateMemberTags(
-    listId,
-    subscriberHash,
-    { tags: [...tags] }
-  );
-}
+    async function updateTags(subscriberHash, tags) {
+      const response = await mailchimp.lists.updateMemberTags(
+        listId,
+        subscriberHash,
+        { tags: [...tags] }
+      );
+
+      console.log(
+        `The return type for this endpoint is null, so this should be true: ${
+          response === null
+        }`
+      );
+    }
+
+    async function run() {
+      const response = await mailchimp.lists.addListMember(listId, {
+        email_adress: subscribingUser.email,
+        status: "subscribed",
+        merge_fields: {
+          FNAME: subcribingUser.firstName,
+          LNAME: subscribingUser.lastName,
+        },
+      });
+
+      console.log(
+        `Successfully added contact as an audience member. The contact's id is ${response.id}`
+      );
+
+      return response.id;
+    }
+
+    try {
+      const subscriberHash = await run();
+      await updateTags(subscriberHash, [
+        { name: "teste", status: "active" },
+        { name: "teste2", status: "active" },
+      ]);
+    } catch (error) {
+      console.log("Erro ao adicionar usuário ao Mailchimp", error);
+    }
+  });
