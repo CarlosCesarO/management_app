@@ -56,6 +56,14 @@ exports.onUserCreate = functions.firestore
       return response.id;
     }
 
+    // async function updateMember() {
+    //   const response = await mailchimp.lists.updateListMember(
+    //     "list_id",
+    //     "subscriber_hash",
+    //     { merge_fields: { PLAN: "PRO" } }
+    //   );
+    // }
+
     try {
       const subscriberHash = await run();
       await updateTags(subscriberHash, [
