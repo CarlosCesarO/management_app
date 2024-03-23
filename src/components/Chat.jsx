@@ -16,15 +16,16 @@ import { useFirestore } from "@/hooks/useFirestore";
 import { useState } from "react";
 import { ChevronLeftIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { timestamp } from "@/firebase/config";
+import { useUsersContext } from "@/hooks/useUsersContext";
 
 export default function Chat({
   selectedChat,
   chats,
   setSelectedChat,
   setChatIsOpen,
-  users,
 }) {
   const { user } = useAuthContext();
+  const { users } = useUsersContext;
   const {
     updateDocument: updateChat,
     addDocument: createChat,

@@ -28,6 +28,9 @@ export const useSignup = () => {
       // Add display name to user
       await updateProfile(auth.currentUser, { displayName: name });
 
+      // Dispatch login action
+      dispatch({ type: "LOGIN", payload: res.user });
+
       // Create a user document
       const createdAt = timestamp;
       await setDoc(doc(db, "users", res.user.uid), {
@@ -38,9 +41,6 @@ export const useSignup = () => {
         name: name,
         teamId: "7GfinEO9PorcuHkBNb0G", //ARRUMAR AQUI
       });
-
-      // Dispatch login action
-      dispatch({ type: "LOGIN", payload: res.user });
 
       // Update state
       if (!isCancelled) {

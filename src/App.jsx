@@ -22,9 +22,14 @@ import useMediaQuery from "./hooks/useMediaQuery";
 import Topbar from "./components/Topbar";
 
 const UserDocWrapper = ({ user, children }) => {
+  const { documents: chats } = useCollection("chats", [
+    "participants",
+    "array-contains",
+    user.uid,
+  ]);
   const { document: userDoc } = useDocument("users", user?.uid);
   if (!userDoc) return <Loading />;
-  return children(userDoc);
+  return children(userDoc, chats);
 };
 
 function App() {
@@ -32,7 +37,7 @@ function App() {
   const [chatIsOpen, setChatIsOpen] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
   const { documents: users } = useCollection("users");
-  const { documents: chats } = useCollection("chats");
+
   const [rerender, setRerender] = useState(false);
   const [selectedPriority, setSelectedPriority] = useState(null);
   const isMobile = useMediaQuery("(max-width: 640px)");
@@ -47,7 +52,7 @@ function App() {
           {user ? (
             <UserDocProvider user={user}>
               <UserDocWrapper user={user}>
-                {(userDoc) => (
+                {(userDoc, chats) => (
                   <UsersProvider userDoc={userDoc}>
                     <>
                       {isMobile ? (
